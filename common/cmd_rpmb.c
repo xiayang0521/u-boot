@@ -367,7 +367,7 @@ static OPS_STATE emmc_switch_partition(int part_num){
 
 	CP15ISB;
 
-	if( (cr_readl(CR_EMMC_RESP0) & SWITCH_ERROR) ==1){
+	if( (cr_readl(CR_EMMC_RESP0) & SWITCH_ERROR)){
 		printf("switch fail\n");
 		return EXIT_FAILURE;
 	}
