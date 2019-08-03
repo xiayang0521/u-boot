@@ -44,7 +44,7 @@ void get_bootparam(void)
 
 	if (factory_read(BOOT_PARAM_FILE_NAME, &dst_addr, &dst_length)) {
 		//printf("------------can't find %s\n", BOOT_PARAM_FILE_NAME);
-#if 1 //def CONFIG_NAS_ENABLE //BPI
+#ifdef CONFIG_NAS_ENABLE //BPI
 		// Set up default values
 		printf("Set up default values\n");
 		boot_logo_enable = 1;
@@ -56,8 +56,8 @@ void get_bootparam(void)
 	}
 	else {
 		printf("------------%s found\n", BOOT_PARAM_FILE_NAME);
-		
-		/****** for logo display ******/	
+
+		/****** for logo display ******/
 		//source
 		if (parse_h("BOOT_LOGO_ENABLE", dst_addr, (uint)dst_length, &retVal, &retAddr) == 0) {
 			boot_logo_enable = retVal;
@@ -66,7 +66,7 @@ void get_bootparam(void)
 		else {
 			DEBUG("can't find boot_logo_enable\n");
 		}
-				
+
 		if (parse_h("CUSTOM_LOGO_SRC_WIDTH", dst_addr, (uint)dst_length, &retVal, &retAddr) == 0) {
 			custom_logo_src_width = retVal;
 			debug("CUSTOM_LOGO_SRC_WIDTH=%d\n", retVal);
@@ -74,7 +74,7 @@ void get_bootparam(void)
 		else {
 			DEBUG("can't find custom_logo_src_width\n");
 		}
-		
+
 		if (parse_h("CUSTOM_LOGO_SRC_HEIGHT", dst_addr, (uint)dst_length, &retVal, &retAddr) == 0) {
 			custom_logo_src_height = retVal;
 			debug("CUSTOM_LOGO_SRC_HEIGHT=%d\n", retVal);
@@ -82,7 +82,7 @@ void get_bootparam(void)
 		else {
 			DEBUG("can't find custom_logo_src_height\n");
 		}
-		
+
 		//destination
 		if (parse_h("CUSTOM_LOGO_DST_WIDTH", dst_addr, (uint)dst_length, &retVal, &retAddr) == 0) {
 			custom_logo_dst_width = retVal;
@@ -91,7 +91,7 @@ void get_bootparam(void)
 		else {
 			DEBUG("can't find custom_logo_dst_width\n");
 		}
-		
+
 		if (parse_h("CUSTOM_LOGO_DST_HEIGHT", dst_addr, (uint)dst_length, &retVal, &retAddr) == 0) {
 			custom_logo_dst_height = retVal;
 			debug("CUSTOM_LOGO_DST_HEIGHT=%d\n", retVal);
@@ -121,18 +121,17 @@ int get_one_step_info(void)
 	//printf("%s:\n", __FUNCTION__);
 
 	if (factory_read(BOOT_TVSYSTEM_FILE_NAME, &dst_addr, &dst_length)) {
-		printf("------------can't find %s\n", BOOT_TVSYSTEM_FILE_NAME);
+		//printf("------------can't find %s\n", BOOT_TVSYSTEM_FILE_NAME);
 		//printf("dst_addr=%x\n, dst_length=%d\n",dst_addr,dst_length);
 		return 0;
 	}
 	else {
 		printf("------------%s found\n", BOOT_TVSYSTEM_FILE_NAME);
-				
+
     	rtd_outl( VO_RESOLUTION, 0xee0bdec0); /* set magic pattern in first word */
-		memcpy((void *)(uintptr_t)VO_RESOLUTION+4, dst_addr ,dst_length);		
+		memcpy((void *)(uintptr_t)VO_RESOLUTION+4, dst_addr ,dst_length);
 		flush_cache(VO_RESOLUTION, 4+ dst_length);
-		
-		
+
 		if (factory_read(BOOT_CHECKSUM_FILE_NAME, &dst_addr_chk, &dst_length_chk)) 
 		{
 			printf("------------can't find %s\n", BOOT_CHECKSUM_FILE_NAME);
@@ -140,17 +139,14 @@ int get_one_step_info(void)
 			return 0;
 		}
 		else
-		{				
+		{
 			memcpy(&checksum_128, dst_addr_chk ,sizeof(unsigned char));
-			memcpy(&checksum_256, dst_addr_chk+sizeof(unsigned char),sizeof(unsigned char));	
+			memcpy(&checksum_256, dst_addr_chk+sizeof(unsigned char),sizeof(unsigned char));
 			if(checksum_128==0 && checksum_256==0)
-				return 0;			
+				return 0;
 		}
-		
 		return 1;
 	}
-
-
 }
 #endif
 
