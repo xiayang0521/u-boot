@@ -34,7 +34,7 @@
 #include <asm/arch/system.h>
 #include <asm/arch/factorylib.h>
 
-#define ENV_FILENAME_IN_FACTORY	FACTORY_HEADER_FILE_NAME"env.txt"
+#define ENV_FILENAME_IN_FACTORY	FACTORY_HEADER_FILE_NAME "uEnv.ini"
 
 char *env_name_spec = "FACTORY";
 
