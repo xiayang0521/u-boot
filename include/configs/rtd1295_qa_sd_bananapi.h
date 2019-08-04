@@ -106,7 +106,7 @@
 /* Bootcode Feature: bootcmd: load bootcode from SD card */
 #define CONFIG_BOOT_FROM_SD
 #define CONFIG_BOOT_FROM_SD_DTB				"rtd-1296-bananapi-w2-2GB-HDMI.dtb"
-#define CONFIG_BOOT_FROM_SD_ROOTFS			"SYSTEM"
+#define CONFIG_BOOT_FROM_SD_ROOTFS			"initrd"
 #define CONFIG_BOOT_FROM_SD_VMLINUX			"KERNEL"
 #define CONFIG_BOOT_FROM_SD_AUDIO_CORE			"bluecore.audio"
 
@@ -115,7 +115,7 @@
 #ifdef CONFIG_RESCUE_FROM_USB
 	#define CONFIG_RESCUE_FROM_USB_VMLINUX		"rescue.emmc.KERNEL"
 	#define CONFIG_RESCUE_FROM_USB_DTB		"rescue.emmc.dtb"
-	#define CONFIG_RESCUE_FROM_USB_ROOTFS		"rescue.emmc.SYSTEM"
+	#define CONFIG_RESCUE_FROM_USB_ROOTFS		"rescue.emmc.initrd"
 	#define CONFIG_RESCUE_FROM_USB_AUDIO_CORE	"rescue.bluecore.audio"
 #endif /* CONFIG_RESCUE_FROM_USB */
 
