@@ -91,11 +91,11 @@
 	"audio_loadaddr=0x0f900000\0" \
         "fdt_loadaddr=0x02100000\0" \
 	"fdt_high=0xffffffffffffffff" \
-	"rootfs_loadaddr=0x02100000\0" \
+	"rootfs_loadaddr=0x02200000\0" \
 	"kernel_loadaddr=0x03000000\0" \
 	"script_loadaddr=0x1500000\0" \
 	"audio=bluecore.audio\0" \
-	"bootargs=boot=LABEL=LIBREELEC disk=LABEL=STORAGE ssh textmode earlycon console=ttyS0,115200n8 console=tty0\0" \
+	"bootargs=earlycon=uart8250,mmio32,0x98007800 fbcon=map:0 loglevel=7 debug=7 boot=/dev/mmcblk0p1 disk=/dev/mmcblk0p2 ssh textmode console=ttyS0,115200n8\0" \
 	"bootenv=uEnv.ini\0" \
 	"dtb_name=rtd-1296-bananapi-w2-2GB-HDMI.dtb\0" \
 	"kernel=KERNEL\0" \
@@ -106,9 +106,9 @@
 	"loadenv=fatload ${device} ${partition} ${scriptaddr} ${bootenv}\0" \
 	"loadfdt=fatload ${device} ${partition} ${fdt_loadaddr} ${dtn_name}\0" \
 	"loadkernel=fatload ${device} ${partition} ${kernel_loadaddr} ${kernel}\0" \
-	"bootmmc=if run loadenv; then env import -t ${script_loadaddr} ${filesize}; fi; run uenvcmd; fatload mmc 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
-	"bootusb=if run loadenv; then env import -t ${script_loadaddr} ${filesize}; fi; run uenvcmd; fatload usb 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
-	"bootsd=if run loadenv; then env import -t ${script_loadaddr} ${filesize}; fi; run uenvcmd; fatload sd 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
+	"bootmmc=run uenvcmd; fatload mmc 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
+	"bootusb=run uenvcmd; fatload usb 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
+	"bootsd=run uenvcmd; fatload sd 0:1 ${loadaddr} ${kernel}; run bootkernel\0" \
 	"bootkernel=bootm ${kernel_loadaddr} - ${fdt_loadaddr}\0"
 
 /* Pass open firmware flat tree */
