@@ -282,9 +282,7 @@ int abortboot(int bootdelay)
 	printf(CONFIG_MENUPROMPT);
 #else
 #ifdef CONFIG_BSP_REALTEK
-	printf("Hit Esc or Tab key to enter console mode or rescue linux: %2d ", bootdelay);
-#else
-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
+	printf("Hit esc or tab to stop autoboot: %2d ", bootdelay);
 #endif /* CONFIG_BSP_REALTEK */
 #endif
 
@@ -365,10 +363,10 @@ start = get_timer(0);
 		if (0) {	/* we got a key press from LSADC */
 			lsadc_key = 0;
 		}
-				
+
 		switch (console_key) {
 			case _ESC:
-				printf("\nPress Esc Key\n");						
+				printf("\nPress Esc Key\n");
 				boot_mode = BOOT_CONSOLE_MODE;
 				abort = 1; /* don't auto boot	*/
 				break;
@@ -400,7 +398,7 @@ start = get_timer(0);
 				break;
 		}
 #ifdef CONFIG_INSTALL_GPIO_NUM
-		if(!getGPIO(CONFIG_INSTALL_GPIO_NUM)){		
+		if(!getGPIO(CONFIG_INSTALL_GPIO_NUM)){
 			printf("\nPress Install Button\n");
 			setenv("rescue_cmd", "go r");
 			boot_mode = BOOT_RESCUE_MODE;
@@ -429,12 +427,12 @@ start = get_timer(0);
         }
 #endif /* CONFIG_BOARD_WD_MONARCH */ /* CONFIG_BOARD_WD_PELICAN) */
 
-#if 0//defined(CONFIG_SYS_IR_SUPPORT)		
-//		if( rtd_readbits(IR_SR_reg, _BIT0)){	
-//            printf("\nGet IR\n");			
-//			rtd_setbits(IR_SR_reg, _BIT0);		
+#if 0//defined(CONFIG_SYS_IR_SUPPORT)
+//		if( rtd_readbits(IR_SR_reg, _BIT0)){
+//            printf("\nGet IR\n");
+//			rtd_setbits(IR_SR_reg, _BIT0);
 //			ir_flag=1;
-//			break;	
+//			break;
 //		}
 		if (IR_Get_irdvf()) {
 			printf("\nGet IR\n");
@@ -443,7 +441,7 @@ start = get_timer(0);
 			break;
 		}
 #endif
-	}	
+	}
 #if defined(CONFIG_SYS_IR_SUPPORT)
 
     int bKeyLeft = 0;
@@ -459,7 +457,7 @@ start = get_timer(0);
         printf("Please Enter IR Key\n");
         key = 0;
         count = get_timer(0);
-        while (get_timer(count) < CONFIG_IR_DELAY*20 && !key) {          
+        while (get_timer(count) < CONFIG_IR_DELAY*20 && !key) {
             if (IR_Get_irdvf()) {
                 IR_Set_irdvf(_BIT0);
                 key = IR_Parsing_key();
@@ -470,12 +468,12 @@ start = get_timer(0);
                 }
             }
         }
-        
+
         switch (key) {
             case KEY_OPTION:
                 bKeyOption = 1;
                 break;
-                
+
             case KEY_LEFT:
                 bKeyLeft = 1;
                 //printf("Detect Other IR Key\n");
@@ -492,7 +490,7 @@ start = get_timer(0);
                     }
                 }
                 break;
-                
+
             case KEY_RIGHT:
                 bKeyRight = 1;
                 //printf("Detect Other IR Key\n");
@@ -543,13 +541,13 @@ start = get_timer(0);
                     }
                 }
                 break;
-#endif                
+#endif
             default:
                 break;
         }
 
 
-        if (bKeyOption) {      
+        if (bKeyOption) {
             printf("menu : usb update \n");
 
             boot = (bootloader_message *)BACKUP_DESCRIPTION_RECOVERY_ADDR;
@@ -630,15 +628,15 @@ start = get_timer(0);
 
             bEnterRecovery = 1;
         }
-#endif    
+#endif
     }
-#endif					
+#endif
 #if CONFIG_ANDROID_RECOVERY
         if (!abort) {
-                printf("======== Checking into android recovery ====\n");							
-                if (bEnterRecovery == 1) {                    		     	                				
-                    setenv("rescue_cmd", "go ra");
-                    boot_mode = BOOT_ANDROID_MODE;                    
+                printf("======== Start Android Recovery ====\n");
+                if (bEnterRecovery == 1) {
+                    setenv("rescue_cmd", "gora");
+                    boot_mode = BOOT_ANDROID_MODE;
                     abort = 1;
                     return abort;
                 }
@@ -742,7 +740,7 @@ void main_loop (void)
 	char *bcs;
 	char bcs_set[16];
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
-	
+
 	int check_default_var;
 	check_default_var = check_default_env("Checking default environment\n");
 	if (!check_default_var)
@@ -881,7 +879,7 @@ void main_loop (void)
 		disable_ctrlc(prev);	/* restore Control C checking */
 # endif
 	}
-	
+
 	//printf("######## PK boot_mode:[%d] [%s]\n", boot_mode, getenv("rescue_cmd"));
 /***********************************************************
  * Realtek Patch
