@@ -543,17 +543,17 @@ static int get_string(struct usb_composite_dev *cdev,
 
 		sp = composite->strings;
 		if (sp)
-			collect_langs(sp, s->wData);
+			collect_langs(sp, wData);
 
 		list_for_each_entry(c, &cdev->configs, list) {
 			sp = c->strings;
 			if (sp)
-				collect_langs(sp, s->wData);
+				collect_langs(sp, wData);
 
 			list_for_each_entry(f, &c->functions, list) {
 				sp = f->strings;
 				if (sp)
-					collect_langs(sp, s->wData);
+					collect_langs(sp, wData);
 			}
 		}
 
