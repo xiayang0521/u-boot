@@ -29,7 +29,7 @@
 #define CONFIG_BMP_32BPP
 #define CONFIG_SPLASH_SCREEN
 #define CONFIG_SPLASH_SCREEN_ALIGN
-#define STDOUT_CFG "vidconsole,serial"
+#define STDOUT_CFG "serial"
 #else
 #define STDOUT_CFG "serial"
 #endif
