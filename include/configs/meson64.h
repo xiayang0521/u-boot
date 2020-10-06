@@ -22,7 +22,7 @@
 #define CONFIG_BMP_16BPP
 #define CONFIG_BMP_24BPP
 #define CONFIG_BMP_32BPP
-#define STDOUT_CFG "vidconsole,serial"
+#define STDOUT_CFG "serial"
 #else
 #define STDOUT_CFG "serial"
 #endif
