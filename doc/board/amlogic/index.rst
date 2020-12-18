@@ -19,6 +19,8 @@ This matrix concerns the actual source code version.
 |        			| Nanopi-K2 | Khadas-VIM      | Libretech-PC |	          | SEI510     | Khadas-VIM3 | Khadas-VIM3L |
 |        			| P200	    | LibreTech-CC v1 |	WeTek Core2  |	          |            | GT-King/Pro | Odroid-C4    |
 |        			| P201	    | LibreTech-AC v2 |	             |	          |            |             |              |
+|                               | WeTek Hub |                 |              |            |            |             |              |
+|                               | WeTek Play2|                |              |            |            |             |              |
 +-------------------------------+-----------+-----------------+--------------+------------+------------+-------------+--------------+
 | UART                       	| **Yes**   | **Yes**         | **Yes**      | **Yes**    | **Yes**    | **Yes**     | **Yes**      |
 +-------------------------------+-----------+-----------------+--------------+------------+------------+-------------+--------------+
@@ -97,5 +99,7 @@ Board Documentation
    sei510
    sei610
    u200
-   w400
    wetek-core2
+   wetek-hub
+   wetek-play2
+   w400
