@@ -5,3 +5,7 @@
  */
 
 #include "meson-g12-common-u-boot.dtsi"
+
+&tflash_vdd {
+	gpio = <&gpio_ao GPIOAO_8 GPIO_OPEN_DRAIN>;
+};
