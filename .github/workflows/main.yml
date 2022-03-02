@@ -53,6 +53,7 @@ jobs:
       - name:  makeu200
         id: make
         run: |
+          export CROSS_COMPILE=aarch64-none-elf-
           make u200_defconfig
           make
           echo "make done"
