@@ -50,12 +50,14 @@ jobs:
       - name: Download source code
         id: down
         run: |
+          git clone https://github.com/BayLibre/u-boot.git -b buildroot-openlinux-20180418 amlogic-u-boot
           git clone https://github.com/xiayang0521/amlogic-boot-fip amlogic-boot-fip
           export FIPDIR=$PWD/amlogic-boot-fip/u200
       - name:  makeu200
         id: make
         run: |
-          make u200_defconfig
+          cd amlogic-u-boot
+          make g12a_u200_v1_defconfig
           make
           echo "make done"
           export UBOOTDIR=$PWD
@@ -63,9 +65,11 @@ jobs:
         id: create
         if: steps.make.outputs.status == 'success' && !cancelled()
         run: |
+            cd ../
+            pwd
             mkdir fip
             cp $FIPDIR/* fip/
-            cp u-boot.bin fip/bl33.bin
+            cp $UBOOTDIR/u-boot.bin fip/bl33.bin
             echo "FILEPATH=$PWD/fip" >> $GITHUB_ENV
             sh fip/blx_fix.sh \
                 fip/bl30.bin \
