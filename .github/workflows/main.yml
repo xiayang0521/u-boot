@@ -58,6 +58,7 @@ jobs:
         id: make
         run: |
           cd amlogic-u-boot
+          export CROSS_COMPILE=$PWD/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux/bin/aarch64-none-elf-
           make g12a_u200_v1_defconfig
           make
           echo "make done"
