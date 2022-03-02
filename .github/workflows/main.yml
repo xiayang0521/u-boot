@@ -1,0 +1,123 @@
+#==========================================================================
+# Description: Build Armbian For Amlogic s9xxx tv box
+# Copyright (C) 2021 https://github.com/ophub/amlogic-s9xxx-armbian
+#==========================================================================
+
+name: Build mainline uboot
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      set_release:
+        description: "RELEASE: mainline"
+        required: false
+        default: "focal"
+      set_board:
+        description: "BOARD: u200/S905L3A"
+        required: false
+        default: "lepotato"
+      more_settings:
+        description: "Rebuild: More parameter settings"
+        required: false
+        default: ""
+  #schedule:
+    #- cron: "0 17 * * 0"
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Initialization environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          wget https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux.tar.xz
+          wget https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-arm-none-eabi-4.8-2013.11_linux.tar.xz
+          tar xvfJ gcc-linaro-aarch64-none-elf-4.8-2013.11_linux.tar.xz
+          tar xvfJ gcc-linaro-arm-none-eabi-4.8-2013.11_linux.tar.xz
+          export PATH=$PWD/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux/bin:$PWD/gcc-linaro-arm-none-eabi-4.8-2013.11_linux/bin:$PATH
+      - name: Download source code
+        id: down
+        run: |
+          git clone https://github.com/xiayang0521/amlogic-boot-fip amlogic-boot-fip
+          export FIPDIR=$PWD/amlogic-boot-fip/u200
+      - name:  makeu200
+        id: make
+        run: |
+          make x96maxplus-u200_defconfig
+          make clean
+          make -j8
+          echo "make done"
+          export UBOOTDIR=$PWD
+      - name: create-u-boot
+        id: create
+        if: steps.make.outputs.status == 'success' && !cancelled()
+        run: |
+            mkdir fip
+            cp $FIPDIR/* fip/
+            cp u-boot.bin fip/bl33.bin
+            echo "FILEPATH=$PWD/fip" >> $GITHUB_ENV
+            sh fip/blx_fix.sh \
+                fip/bl30.bin \
+                fip/zero_tmp \
+                fip/bl30_zero.bin \
+                fip/bl301.bin \
+                fip/bl301_zero.bin \
+                fip/bl30_new.bin \
+                bl30
+            sh fip/blx_fix.sh \
+                fip/bl2.bin \
+                fip/zero_tmp \
+                fip/bl2_zero.bin \
+                fip/acs.bin \
+                fip/bl21_zero.bin \
+                fip/bl2_new.bin \
+                bl2
+            $FIPDIR/g12a/aml_encrypt_g12a --bl30sig --input fip/bl30_new.bin \
+                                        --output fip/bl30_new.bin.g12a.enc \
+                                        --level v3
+            $FIPDIR/g12a/aml_encrypt_g12a --bl3sig --input fip/bl30_new.bin.g12a.enc \
+                                        --output fip/bl30_new.bin.enc \
+                                        --level v3 --type bl30
+            $FIPDIR/g12a/aml_encrypt_g12a --bl3sig --input fip/bl31.img \
+                                        --output fip/bl31.img.enc \
+                                        --level v3 --type bl31
+            $FIPDIR/g12a/aml_encrypt_g12a --bl3sig --input fip/bl33.bin --compress lz4 \
+                                        --output fip/bl33.bin.enc \
+                                        --level v3 --type bl33
+            $FIPDIR/g12a/aml_encrypt_g12a --bl2sig --input fip/bl2_new.bin \
+                                        --output fip/bl2.n.bin.sig
+            $FIPDIR/g12a/aml_encrypt_g12a --bootmk \
+                --output fip/u-boot.bin \
+                --bl2 fip/bl2.n.bin.sig \
+                --bl30 fip/bl30_new.bin.enc \
+                --bl31 fip/bl31.img.enc \
+                --bl33 fip/bl33.bin.enc \
+                --ddrfw1 fip/ddr4_1d.fw \
+                --ddrfw2 fip/ddr4_2d.fw \
+                --ddrfw3 fip/ddr3_1d.fw \
+                --ddrfw4 fip/piei.fw \
+                --ddrfw5 fip/lpddr4_1d.fw \
+                --ddrfw6 fip/lpddr4_2d.fw \
+                --ddrfw7 fip/diag_lpddr4.fw \
+                --level v3
+      - name: Upload uboot image to Release
+        id: release
+        uses: ncipollo/release-action@v1
+        if: steps.makeuboot.outputs.status == 'success' && !cancelled()
+        with:
+          tag: u-boot-u200
+          artifacts: ${{ env.FILEPATH }}/*
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            This is mainline uboot for Amlogic u200
