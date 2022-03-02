@@ -53,9 +53,8 @@ jobs:
       - name:  makeu200
         id: make
         run: |
-          make x96maxplus-u200_defconfig
-          make clean
-          make -j8
+          make g12a_u200_v1_defconfig
+          make
           echo "make done"
           export UBOOTDIR=$PWD
       - name: create-u-boot
