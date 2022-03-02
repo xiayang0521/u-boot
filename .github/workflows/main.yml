@@ -53,7 +53,7 @@ jobs:
       - name:  makeu200
         id: make
         run: |
-          make g12a_u200_v1_defconfig
+          make u200_defconfig
           make
           echo "make done"
           export UBOOTDIR=$PWD
